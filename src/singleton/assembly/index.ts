@@ -6,9 +6,14 @@ class Player {
   public wins: u64 = 8;
   public points: u64 = 180;
 
-  update(wins: u64, points: u64): void {
+  update(wins: u64, points: u64): string {
     this.wins = wins;
     this.points = points;
+    return `✅ Player updated .${wins}, ${points} ( ${this.storageReport()} )`;
+  }
+
+  private storageReport(): string {
+    return `storage [ ${Context.storageUsage} bytes ]`;
   }
 }
 
@@ -39,9 +44,8 @@ export class Contract {
   }
 
   @mutateState()
-  updatePlayer(wins: u64, points: u64): string {
+  updatePlayer(wins: u64, points: u64): void {
     this.player.update(wins, points);
-    return `✅ Player updated . ( ${this.storageReport()} )`;
   }
   // private helper method used by read() and write() above
   private storageReport(): string {
