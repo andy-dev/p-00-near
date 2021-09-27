@@ -3,10 +3,10 @@ import { storage, Context } from "near-sdk-core";
 @nearBindgen
 class Player {
   public player: string = "phoenixpulsar.testnet";
-  public wins: u32 = 8;
-  public points: u32 = 180;
+  public wins: u64 = 8;
+  public points: u64 = 180;
 
-  update(wins: u32, points: u32): void {
+  update(wins: u64, points: u64): void {
     this.wins = wins;
     this.points = points;
   }
@@ -39,7 +39,7 @@ export class Contract {
   }
 
   @mutateState()
-  updatePlayer(wins: u32, points: u32): string {
+  updatePlayer(wins: u64, points: u64): string {
     this.player.update(wins, points);
     return `✅ Player updated . ( ${this.storageReport()} )`;
   }
