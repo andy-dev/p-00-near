@@ -21,7 +21,7 @@ echo "(run this script again to see changes made by this file)"
 echo ---------------------------------------------------------
 echo
 
-near view $CONTRACT helloWorld
+#near view $CONTRACT helloWorld
 
 echo
 echo
@@ -31,24 +31,24 @@ near view $CONTRACT read '{"key":"STATE"}'
 echo
 echo
 echo ---------------------------------------------------------
-echo "Step 2: Call 'change' functions on the contract"
+#echo "Step 2: Call 'change' functions on the contract"
 echo ---------------------------------------------------------
 echo
 
 # the following line fails with an error because we can't write to storage without signing the message
 # --> FunctionCallError(HostError(ProhibitedInView { method_name: "storage_write" }))
 # near view $CONTRACT write '{"key": "some-key", "value":"some value"}'
-near call $CONTRACT write '{"key": "STATE", "value":"{a:1}"}' --accountId $CONTRACT
+#near call $CONTRACT write '{"key": "STATE", "value":"{a:1}"}' --accountId $CONTRACT
 
 echo ---------------------------------------------------------
-echo "Step 3: Call 'update' on player instance functions on the contract"
+#echo "Step 3: Call 'update' on player instance functions on the contract"
 echo ---------------------------------------------------------
 echo
 
 # the following line fails with an error because we can't write to storage without signing the message
 # --> FunctionCallError(HostError(ProhibitedInView { method_name: "storage_write" }))
 # near view $CONTRACT write '{"key": "some-key", "value":"some value"}'
-near call $CONTRACT updatePlayer '{"wins":"'$000'", "points": "'$9999'"}' --accountId $CONTRACT
+near call $CONTRACT updatePlayer '{"wins": '$000', "points": '$9999'}' --accountId $CONTRACT
 
 echo
 echo "now run this script again to see changes made by this file"
