@@ -34,7 +34,6 @@ const GAME_LINE_UP = {
 
 ### Getting started
 
-(see below for video recordings of each of the following steps)
 
 1. clone this repo to a local folder
 2. run `yarn`
