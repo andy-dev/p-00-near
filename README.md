@@ -1,7 +1,7 @@
 # `near-sdk-as` NFL Fantasy Between Friends
 
 This is a learning excersie to explore NEAR.
-The idea: Every year a group of frinds play a simple version of NFL Fantasy. The goal of this project is to create two contracts. One contract will hold the funds and the other contract will keep track of the scores.
+The idea: Every year a group of friends play a simple version of NFL Fantasy. The goal of this project is mange both the pool and the weekly scores of the game. To do this, we will have to create two contracts. One contract will hold the funds of the pool and the other contract will keep track of the scores.
 
 ### Rules and Process
 
