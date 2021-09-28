@@ -1,68 +1,36 @@
 # `near-sdk-as` Starter Kit
 
-This is a good project to use as a starting point for your AssemblyScript project.
+This is a learning excersie to explore NEAR.
+The idea: Every year a group of frinds play a simple version of NFL Fantasy. The goal of this project is to create two contracts. One contract will hold the funds and the other contract will keep track of the scores.
 
-## Samples
+### Rules and Process
 
-This repository includes a complete project structure for AssemblyScript contracts targeting the NEAR platform.
+1. A player should add $NEAR in a pool to be able to play.
+2. From a preselected table of 6 columns and each row containing NFL teams, you select one Team from each column.
 
-The example here is very basic.  It's a simple contract demonstrating the following concepts:
-- a single contract
-- the difference between `view` vs. `change` methods
-- basic contract storage
-
-There are 2 AssemblyScript contracts in this project, each in their own folder:
-
-- **simple** in the `src/simple` folder
-- **singleton** in the `src/singleton` folder
-
-### Simple
-
-We say that an AssemblyScript contract is written in the "simple style" when the `index.ts` file (the contract entry point) includes a series of exported functions.
-
-In this case, all exported functions become public contract methods.
-
-```ts
-// return the string 'hello world'
-export function helloWorld(): string {}
-
-// read the given key from account (contract) storage
-export function read(key: string): string {}
-
-// write the given value at the given key to account (contract) storage
-export function write(key: string, value: string): string {}
-
-// private helper method used by read() and write() above
-private storageReport(): string {}
+```
+const GAME_LINE_UP = {
+  year: "2021",
+  block_1: ["KC", "BUF", "GB", "PIT"],
+  block_2: ["TB", "SEA", "NO", "BAL"],
+  block_3: ["TEN", "CLE", "IND", "MIA", "LA", "OAK"],
+  block_4: ["ARI", "CHI", "NE", "SD", "WAS", "MIN"],
+  block_5: ["NYG", "DAL", "SF", "DEN", "DET", "CAR"],
+  block_6: ["CIN", "PHI", "HOU", "ATL", "NYJ", "JAX"],
+};
 ```
 
-### Singleton
+3. If your team wins a game, a plus 1 gets added to your wins.
+4. If your team loses, your wins stay the same.
+5. We also track how many points the team score (for tie breaker).
+6. After regular season is over, the player with the most points picks first a team they want to take to the superbowl.
+7. Teams get assigned until there are no teams left. If a player does not get a team, this is the end the road for that player.
+8. Prices are then divided 50%(1st), 30%(2nd), 20%(3rd).
 
-We say that an AssemblyScript contract is written in the "singleton style" when the `index.ts` file (the contract entry point) has a single exported class (the name of the class doesn't matter) that is decorated with `@nearBindgen`.
+## Contracts
 
-In this case, all methods on the class become public contract methods unless marked `private`.  Also, all instance variables are stored as a serialized instance of the class under a special storage key named `STATE`.  AssemblyScript uses JSON for storage serialization (as opposed to Rust contracts which use a custom binary serialization format called borsh).
-
-```ts
-@nearBindgen
-export class Contract {
-
-  // return the string 'hello world'
-  helloWorld(): string {}
-
-  // read the given key from account (contract) storage
-  read(key: string): string {}
-
-  // write the given value at the given key to account (contract) storage
-  @mutateState()
-  write(key: string, value: string): string {}
-
-  // private helper method used by read() and write() above
-  private storageReport(): string {}
-}
-```
-
-
-## Usage
+- **Scores** in the `src/Scores` folder
+<!-- todo - **Pool**   -->
 
 ### Getting started
 
@@ -71,89 +39,33 @@ export class Contract {
 1. clone this repo to a local folder
 2. run `yarn`
 3. run `./scripts/1.dev-deploy.sh`
-3. run `./scripts/2.use-contract.sh`
-4. run `./scripts/2.use-contract.sh` (yes, run it to see changes)
-5. run `./scripts/3.cleanup.sh`
-
-### Videos
-
-**`1.dev-deploy.sh`**
-
-This video shows the build and deployment of the contract.
-
-[![asciicast](https://asciinema.org/a/409575.svg)](https://asciinema.org/a/409575)
-
-**`2.use-contract.sh`**
-
-This video shows contract methods being called.  You should run the script twice to see the effect it has on contract state.
-
-[![asciicast](https://asciinema.org/a/409577.svg)](https://asciinema.org/a/409577)
-
-**`3.cleanup.sh`**
-
-This video shows the cleanup script running.  Make sure you add the `BENEFICIARY` environment variable. The script will remind you if you forget.
-
-```sh
-export BENEFICIARY=<your-account-here>   # this account receives contract account balance
-```
-
-[![asciicast](https://asciinema.org/a/409580.svg)](https://asciinema.org/a/409580)
-
-### Other documentation
-
-- See `./scripts/README.md` for documentation about the scripts
-- Watch this video where Willem Wyndham walks us through refactoring a simple example of a NEAR smart contract written in AssemblyScript
-
-  https://youtu.be/QP7aveSqRPo
-
-  ```
-  There are 2 "styles" of implementing AssemblyScript NEAR contracts:
-  - the contract interface can either be a collection of exported functions
-  - or the contract interface can be the methods of a an exported class
-
-  We call the second style "Singleton" because there is only one instance of the class which is serialized to the blockchain storage.  Rust contracts written for NEAR do this by default with the contract struct.
-
-   0:00 noise (to cut)
-   0:10 Welcome
-   0:59 Create project starting with "npm init"
-   2:20 Customize the project for AssemblyScript development
-   9:25 Import the Counter example and get unit tests passing
-  18:30 Adapt the Counter example to a Singleton style contract
-  21:49 Refactoring unit tests to access the new methods
-  24:45 Review and summary
-  ```
-
+4. run `./scripts/2.use-contract.sh` (uncomment/modify line 51 (where we call addPlayerToScore on the contract))
+5. run `./scripts/2.use-contract.sh` (yes, run it again, but first change the score you want to add first)
+6. run `./scripts/3.cleanup.sh`
 
 ## The file system
 
 ```sh
-├── README.md                          # this file
-├── as-pect.config.js                  # configuration for as-pect (AssemblyScript unit testing)
-├── asconfig.json                      # configuration for AssemblyScript compiler (supports multiple contracts)
-├── package.json                       # NodeJS project manifest
+├── README.md
+├── as-pect.config.js
+├── asconfig.json
+├── package.json
 ├── scripts
-│   ├── 1.dev-deploy.sh                # helper: build and deploy contracts
-│   ├── 2.use-contract.sh              # helper: call methods on ContractPromise
-│   ├── 3.cleanup.sh                   # helper: delete build and deploy artifacts
-│   └── README.md                      # documentation for helper scripts
+│   ├── 1.dev-deploy.sh
+│   ├── 2.use-contract.sh
+│   ├── 3.cleanup.sh
+│   └── README.md
 ├── src
-│   ├── as_types.d.ts                  # AssemblyScript headers for type hints
-│   ├── simple                         # Contract 1: "Simple example"
+│   ├── as_types.d.ts
+│   ├── Scores
 │   │   ├── __tests__
-│   │   │   ├── as-pect.d.ts           # as-pect unit testing headers for type hints
-│   │   │   └── index.unit.spec.ts     # unit tests for contract 1
-│   │   ├── asconfig.json              # configuration for AssemblyScript compiler (one per contract)
+│   │   │   ├── as-pect.d.ts
+│   │   │   └── index.unit.spec.ts
+│   │   ├── asconfig.json
 │   │   └── assembly
-│   │       └── index.ts               # contract code for contract 1
-│   ├── singleton                      # Contract 2: "Singleton-style example"
-│   │   ├── __tests__
-│   │   │   ├── as-pect.d.ts           # as-pect unit testing headers for type hints
-│   │   │   └── index.unit.spec.ts     # unit tests for contract 2
-│   │   ├── asconfig.json              # configuration for AssemblyScript compiler (one per contract)
-│   │   └── assembly
-│   │       └── index.ts               # contract code for contract 2
-│   ├── tsconfig.json                  # Typescript configuration
-│   └── utils.ts                       # common contract utility functions
-└── yarn.lock                          # project manifest version lock
+│   │       └── index.ts
+│   ├── tsconfig.json
+│   └── utils.ts
+└── yarn.lock
 
 ```

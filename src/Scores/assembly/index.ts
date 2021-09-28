@@ -2,9 +2,15 @@ import { storage, Context } from "near-sdk-core";
 
 @nearBindgen
 class Player {
-  public player: string = "phoenixpulsar.testnet";
-  public wins: u64 = 8;
-  public points: u64 = 180;
+  public player: string;
+  public wins: u64;
+  public points: u64;
+
+  constructor(player: string, wins: u64, points: u64) {
+    this.player = player;
+    this.wins = wins;
+    this.points = points;
+  }
 
   update(wins: u64, points: u64): string {
     this.wins = wins;
@@ -19,13 +25,7 @@ class Player {
 
 @nearBindgen
 export class Contract {
-  private message: string = "hello world";
-  public player: Player = new Player();
-
-  // return the string 'hello world'
-  helloWorld(): string {
-    return this.message;
-  }
+  public scores: Array<Player> = [];
 
   // read the given key from account (contract) storage
   read(key: string): string {
@@ -44,14 +44,19 @@ export class Contract {
   }
 
   @mutateState()
-  updatePlayer(wins: u64, points: u64): void {
-    this.player.update(wins, points);
+  addPlayerScores(player: string, wins: u64, points: u64): void {
+    // todo prevent from adding same player twice logic
+    let playerToAdd = new Player(player, wins, points);
+    // not sure we can use es6
+    //this.scores = [...this.scores, playerToAdd];
+    this.scores.push(playerToAdd);
   }
   // private helper method used by read() and write() above
   private storageReport(): string {
     return `storage [ ${Context.storageUsage} bytes ]`;
   }
 }
+
 /**
  * This function exists only to avoid a compiler error
  *

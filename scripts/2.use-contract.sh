@@ -48,7 +48,7 @@ echo
 # the following line fails with an error because we can't write to storage without signing the message
 # --> FunctionCallError(HostError(ProhibitedInView { method_name: "storage_write" }))
 # near view $CONTRACT write '{"key": "some-key", "value":"some value"}'
-near call $CONTRACT updatePlayer '{"wins": "'88'", "points": "'180'"}' --accountId $CONTRACT
+#near call $CONTRACT addPlayerScores '{"player":"macedo.testnet", "wins": "'8'", "points": "'99'"}' --accountId $CONTRACT
 
 echo
 echo "now run this script again to see changes made by this file"
