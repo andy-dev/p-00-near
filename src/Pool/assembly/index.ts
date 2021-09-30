@@ -1,7 +1,14 @@
-import { storage, Context } from "near-sdk-core";
+import { storage, Context, u128 } from "near-sdk-core";
+import { XCC_GAS, POOL_TICKET_PRICE, AccountId, asNEAR } from "../../utils";
 
 @nearBindgen
 export class Pool {
+  constructor(
+    public poolTicketPrice: u128 = POOL_TICKET_PRICE,
+    public poolTicketsSold: u128 = u128.Zero,
+    public winner: AccountId | null = null,
+    public participants: Array<AccountId> = new Array(0)
+  ) {}
   // read the given key from account (contract) storage
   read(key: string): string {
     if (isKeyInStorage(key)) {
@@ -40,3 +47,10 @@ ERROR TS2339: Property 'contains' does not exist on type 'src/singleton/assembly
 function isKeyInStorage(key: string): bool {
   return storage.hasKey(key);
 }
+
+/**
+ * == PUBLIC METHODS ================================================
+ *
+ * The contract's public API.
+ */
+export function sell_ticket(): void {}
