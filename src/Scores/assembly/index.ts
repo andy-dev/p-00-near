@@ -3,11 +3,11 @@ import { XCC_GAS, POOL_TICKET_PRICE, AccountId, asNEAR } from "../../utils";
 
 @nearBindgen
 class Player {
-  public player: AccountId | null = null;
+  public player: AccountId;
   public wins: u64;
   public points: u64;
 
-  constructor(player: string, wins: u64, points: u64) {
+  constructor(player: AccountId, wins: u64, points: u64) {
     this.player = player;
     this.wins = wins;
     this.points = points;
@@ -45,7 +45,7 @@ export class Contract {
   }
 
   @mutateState()
-  addPlayerScores(player: string, wins: u64, points: u64): void {
+  addPlayerScores(player: AccountId, wins: u64, points: u64): void {
     // TODO prevent from adding same player twice logic
     let playerToAdd = new Player(player, wins, points);
     // TODO not sure we can use es6
@@ -54,7 +54,7 @@ export class Contract {
   }
 
   @mutateState()
-  updatePlayerScore(player: string, wins: u64, points: u64): void {
+  updatePlayerScore(player: AccountId, wins: u64, points: u64): void {
     for (let i = 0; i < this.scores.length; ++i) {
       if (this.scores[i].player === player) {
         this.scores[i].update(wins, points);
