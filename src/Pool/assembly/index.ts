@@ -6,7 +6,7 @@ export class Pool {
   constructor(
     public poolTicketPrice: u128 = POOL_TICKET_PRICE,
     public poolTicketsSold: u128 = u128.Zero,
-    public winner: AccountId | null = null,
+    public winner: AccountId = "",
     public participants: Array<AccountId> = new Array(0)
   ) {}
   // read the given key from account (contract) storage
