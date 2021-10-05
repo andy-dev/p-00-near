@@ -32,14 +32,14 @@ class PlayerScores {
 }
 
 // key used to identify project object in storage
-const PROJECT_SCORES_KEY = "state";
+const PROJECT_SCORES_KEY = "STATE";
 
 @nearBindgen
 export class Contract {
   public scores: Array<Player> = [];
 
   constructor(
-    public playerScores: PersistentMap<
+    public playersScores: PersistentMap<
       AccountId,
       PlayerScores
     > = new PersistentMap<AccountId, PlayerScores>("s")
@@ -71,13 +71,14 @@ export class Contract {
   }
 
   @mutateState()
-  updatePlayerScores(player: AccountId, wins: u64, points: u64): void {
-    // long way to make sure we can update state
-    for (let i = 0; i < this.scores.length; ++i) {
-      if (this.scores[i].player === player) {
-        this.scores[i] = this.scores[i].update(wins, points);
-      }
-    }
+  updatePlayerScores(account: AccountId, wins: u64, points: u64): void {
+    // This is not working
+    //for (let i = 0; i < this.scores.length; ++i) {
+    //if (this.scores[i].player === player) {
+    //this.scores[i] = this.scores[i].update(wins, points);
+    //}
+    //}
+    add_player_scores(account, wins, points);
   }
   // private helper method used by read() and write() above
   private storageReport(): string {
@@ -87,12 +88,23 @@ export class Contract {
 
 export function add_player_scores(
   account: AccountId,
-  playerScores: PlayerScores
+  wins: u64,
+  points: u64
 ): void {
+  // create a new player score instance
+  const newOrUpdatedPlayer = new PlayerScores(account, wins, points);
+  // get contract STATE
   const contractScores = get_contract_scores();
-  const currentPlayerScores = contractScores.playerScores;
-  currentPlayerScores.set(account, playerScores);
-  contractScores.playerScores = currentPlayerScores;
+  // get current player scores
+  const currentPlayersScores = contractScores.playersScores;
+
+  // set or update key val pairs
+  currentPlayersScores.set(account, newOrUpdatedPlayer);
+
+  // set playersScore property
+  contractScores.playersScores = currentPlayersScores;
+
+  // save contract with new values
   resave_contract_scores(contractScores);
 }
 
@@ -100,7 +112,7 @@ export function get_contract_scores(): Contract {
   return storage.getSome<Contract>(PROJECT_SCORES_KEY);
 }
 
-export function resave_contract_scores(contract: Contract) {
+export function resave_contract_scores(contract: Contract): void {
   storage.set(PROJECT_SCORES_KEY, contract);
 }
 
