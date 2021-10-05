@@ -1,4 +1,4 @@
-import { storage, Context } from "near-sdk-core";
+import { storage, Context, PersistentMap } from "near-sdk-core";
 import { XCC_GAS, POOL_TICKET_PRICE, AccountId, asNEAR } from "../../utils";
 
 @nearBindgen
@@ -27,8 +27,23 @@ class Player {
 }
 
 @nearBindgen
+class PlayerScores {
+  constructor(public player: AccountId, public wins: u64, public points: u64) {}
+}
+
+// key used to identify project object in storage
+const PROJECT_SCORES_KEY = "state";
+
+@nearBindgen
 export class Contract {
   public scores: Array<Player> = [];
+
+  constructor(
+    public playerScores: PersistentMap<
+      AccountId,
+      PlayerScores
+    > = new PersistentMap<AccountId, PlayerScores>("s")
+  ) {}
 
   // read the given key from account (contract) storage
   read(key: string): string {
@@ -56,7 +71,7 @@ export class Contract {
   }
 
   @mutateState()
-  updatePlayerScore(player: AccountId, wins: u64, points: u64): void {
+  updatePlayerScores(player: AccountId, wins: u64, points: u64): void {
     // long way to make sure we can update state
     for (let i = 0; i < this.scores.length; ++i) {
       if (this.scores[i].player === player) {
@@ -68,6 +83,25 @@ export class Contract {
   private storageReport(): string {
     return `storage [ ${Context.storageUsage} bytes ]`;
   }
+}
+
+export function add_player_scores(
+  account: AccountId,
+  playerScores: PlayerScores
+): void {
+  const contractScores = get_contract_scores();
+  const currentPlayerScores = contractScores.playerScores;
+  currentPlayerScores.set(account, playerScores);
+  contractScores.playerScores = currentPlayerScores;
+  resave_contract_scores(contractScores);
+}
+
+export function get_contract_scores(): Contract {
+  return storage.getSome<Contract>(PROJECT_SCORES_KEY);
+}
+
+export function resave_contract_scores(contract: Contract) {
+  storage.set(PROJECT_SCORES_KEY, contract);
 }
 
 /**
