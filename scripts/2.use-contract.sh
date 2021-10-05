@@ -49,6 +49,7 @@ echo
 # --> FunctionCallError(HostError(ProhibitedInView { method_name: "storage_write" }))
 # near view $CONTRACT write '{"key": "some-key", "value":"some value"}'
 #near call $CONTRACT addPlayerScores '{"player":"macedo.testnet", "wins": "'8'", "points": "'99'"}' --accountId $CONTRACT
+near call $CONTRACT updatePlayerScore '{"player":"macedo.testnet", "wins": "'9'", "points": "'9'"}' --accountId $CONTRACT
 
 echo
 echo "now run this script again to see changes made by this file"

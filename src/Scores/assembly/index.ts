@@ -13,10 +13,12 @@ class Player {
     this.points = points;
   }
 
-  update(wins: u64, points: u64): string {
+  @mutateState()
+  update(wins: u64, points: u64): Player {
     this.wins = wins;
     this.points = points;
-    return `✅ Player updated .${wins}, ${points} ( ${this.storageReport()} )`;
+    return this;
+    //return `✅ Player updated .${wins}, ${points} ( ${this.storageReport()} )`;
   }
 
   private storageReport(): string {
@@ -55,9 +57,10 @@ export class Contract {
 
   @mutateState()
   updatePlayerScore(player: AccountId, wins: u64, points: u64): void {
+    // long way to make sure we can update state
     for (let i = 0; i < this.scores.length; ++i) {
       if (this.scores[i].player === player) {
-        this.scores[i].update(wins, points);
+        this.scores[i] = this.scores[i].update(wins, points);
       }
     }
   }
